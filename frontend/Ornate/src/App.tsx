@@ -1,35 +1,103 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from 'react';
+import type { Jewelry, SearchFilters } from './types/jewelry';
+import { SearchBar } from './components/SearchBar';
+import { JewelryGallery } from './components/JewelryGallery';
+import { AddJewelryForm } from './components/AddJewelryForm';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [allJewelry, setAllJewelry] = useState<Jewelry[]>([]);
+  const [filteredJewelry, setFilteredJewelry] = useState<Jewelry[]>([]);
+  const [showAddForm, setShowAddForm] = useState(false);
+
+  // Load jewelry from localStorage on mount
+  useEffect(() => {
+    const stored = localStorage.getItem('jewelryCollection');
+    if (stored) {
+      const jewelry = JSON.parse(stored);
+      setAllJewelry(jewelry);
+      setFilteredJewelry(jewelry);
+    }
+  }, []);
+
+  // Save to localStorage whenever jewelry changes
+  useEffect(() => {
+    if (allJewelry.length > 0) {
+      localStorage.setItem('jewelryCollection', JSON.stringify(allJewelry));
+    }
+  }, [allJewelry]);
+
+  const handleSearch = (filters: SearchFilters) => {
+    let results = [...allJewelry];
+
+    // Filter by category
+    if (filters.category) {
+      results = results.filter(item => item.category === filters.category);
+    }
+
+    // Filter by outfit type
+    if (filters.outfitType) {
+      results = results.filter(item =>
+        item.outfitTypes.includes(filters.outfitType!)
+      );
+    }
+
+    // Filter by search query (name, description, color)
+    if (filters.searchQuery) {
+      const query = filters.searchQuery.toLowerCase();
+      results = results.filter(item =>
+        item.name.toLowerCase().includes(query) ||
+        item.description?.toLowerCase().includes(query) ||
+        item.color?.toLowerCase().includes(query) ||
+        item.material?.toLowerCase().includes(query)
+      );
+    }
+
+    setFilteredJewelry(results);
+  };
+
+  const handleAddJewelry = (jewelry: Jewelry) => {
+    const newJewelry = [...allJewelry, jewelry];
+    setAllJewelry(newJewelry);
+    setFilteredJewelry(newJewelry);
+    setShowAddForm(false);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+    <div className="app">
+      <header className="app-header">
+        <div className="header-content">
+          <h1>✨ Ornate</h1>
+          <p>Your Personal Jewelry Collection</p>
+        </div>
+        <button onClick={() => setShowAddForm(true)} className="add-btn">
+          + Add Jewelry
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+      </header>
+
+      <main className="app-main">
+        <SearchBar onSearch={handleSearch} />
+        
+        <div className="results-header">
+          <h3>
+            {filteredJewelry.length === allJewelry.length
+              ? `All Jewelry (${allJewelry.length})`
+              : `Search Results (${filteredJewelry.length} of ${allJewelry.length})`
+            }
+          </h3>
+        </div>
+
+        <JewelryGallery items={filteredJewelry} />
+      </main>
+
+      {showAddForm && (
+        <AddJewelryForm
+          onSubmit={handleAddJewelry}
+          onCancel={() => setShowAddForm(false)}
+        />
+      )}
+    </div>
+  );
 }
 
-export default App
+export default App;
