@@ -10,17 +10,17 @@
 .empty-state {
   text-align: center;
   padding: 80px 20px;
-  color: #666;
-  background: rgba(255, 255, 255, 0.8);
+  background: #36393f;
   backdrop-filter: blur(10px);
   border-radius: 24px;
   margin: 20px;
+  border: 1px solid rgba(255, 215, 0, 0.2);
 }
 
 .empty-state h3 {
   font-size: 28px;
   margin-bottom: 12px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #FFD700 0%, #FFF 50%, #FFD700 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -29,7 +29,7 @@
 
 .empty-state p {
   font-size: 16px;
-  color: #888;
+  color: #b9bbbe;
 }
 
 @media (max-width: 768px) {

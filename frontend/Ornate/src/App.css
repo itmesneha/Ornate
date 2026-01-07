@@ -1,20 +1,13 @@
 .app {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-  background-size: 200% 200%;
-  animation: gradientShift 15s ease infinite;
-}
-
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  background: #2f3136;
+  background: linear-gradient(135deg, #1a1b1e 0%, #2f3136 100%);
 }
 
 .app-header {
-  background: rgba(255, 255, 255, 0.95);
+  background: #202225;
   backdrop-filter: blur(10px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   padding: 20px 40px;
   display: flex;
   justify-content: space-between;
@@ -22,44 +15,45 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  border-bottom: 2px solid rgba(255, 215, 0, 0.2);
 }
 
 .header-content h1 {
   margin: 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #FFD700 0%, #FFF 50%, #FFD700 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   font-size: 36px;
   font-weight: 800;
   letter-spacing: -0.5px;
+  text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
 }
 
 .header-content p {
   margin: 4px 0 0 0;
-  color: #666;
+  color: #b9bbbe;
   font-size: 14px;
   font-weight: 500;
 }
 
 .add-btn {
   padding: 12px 28px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(135deg, #FFD700 0%, #FDB931 100%);
+  color: #1a1b1e;
   border: none;
   border-radius: 25px;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
 }
 
 .add-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
-  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
+  background: linear-gradient(135deg, #FDB931 0%, #FFD700 100%);
 }
 
 .app-main {
@@ -74,10 +68,10 @@
 
 .results-header h3 {
   margin: 0;
-  color: white;
+  color: #FFD700;
   font-size: 20px;
   font-weight: 700;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  text-shadow: 0 2px 10px rgba(255, 215, 0, 0.3);
 }
 
 @media (max-width: 768px) {

@@ -1,26 +1,27 @@
 .jewelry-card {
-  background: white;
+  background: #36393f;
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   cursor: pointer;
   height: 100%;
   display: flex;
   flex-direction: column;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 215, 0, 0.1);
 }
 
 .jewelry-card:hover {
   transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 15px 40px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 15px 40px rgba(255, 215, 0, 0.3);
+  border-color: rgba(255, 215, 0, 0.4);
 }
 
 .jewelry-image-container {
   width: 100%;
   height: 250px;
   overflow: hidden;
-  background: linear-gradient(135deg, #f5f7fa 0%, #e8eaf6 100%);
+  background: #2f3136;
   position: relative;
 }
 
@@ -31,7 +32,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.1) 100%);
+  background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.5) 100%);
   pointer-events: none;
 }
 
@@ -57,27 +58,24 @@
   margin: 0 0 8px 0;
   font-size: 19px;
   font-weight: 700;
-  color: #2d3748;
+  color: #ffffff;
   line-height: 1.3;
 }
 
 .jewelry-category {
   margin: 0 0 10px 0;
   font-size: 12px;
-  color: #667eea;
+  color: #FFD700;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
 }
 
 .jewelry-description {
   margin: 0 0 12px 0;
   font-size: 14px;
-  color: #555;
+  color: #b9bbbe;
   line-height: 1.4;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -94,21 +92,28 @@
 }
 
 .tag {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: transparent;
+  color: #FFD700;
   padding: 6px 14px;
   border-radius: 20px;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  border: 2px solid #FFD700;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.tag:hover {
+  background: rgba(255, 215, 0, 0.1);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
 }
 
 .jewelry-detail {
   margin: 4px 0;
   font-size: 13px;
-  color: #888;
+  color: #8e9297;
   display: flex;
   align-items: center;
   gap: 4px;
