@@ -1,7 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.api.jewellery import router as jewellery_router
 
 from app.api.health import router as health_router
+from app.db.session import engine, Base
+from app.models import jewellery  # Import models to register them
+
+# Create all tables
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Jewellery Closet API")
 
@@ -17,4 +23,5 @@ app.add_middleware(
 )
 
 app.include_router(health_router)
+app.include_router(jewellery_router)
  
