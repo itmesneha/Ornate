@@ -15,7 +15,10 @@ app = FastAPI(title="Jewellery Closet API")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173",  # Vite dev server
+        "http://localhost:5173",
+        "http://localhost:5174",
+        "https://ornate-six.vercel.app",
+        "https://*.vercel.app"
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -25,4 +28,17 @@ app.add_middleware(
 app.include_router(health_router)
 app.include_router(jewellery_router)
 app.include_router(upload_router)
+
+@app.get("/")
+def root():
+    return {
+        "message": "Ornate Jewelry API",
+        "status": "running",
+        "endpoints": {
+            "health": "/health",
+            "jewelry": "/jewellery/",
+            "upload": "/upload-image",
+            "docs": "/docs"
+        }
+    }
  
