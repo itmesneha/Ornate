@@ -4,6 +4,7 @@ from uuid import UUID
 from datetime import datetime
 
 class JewelleryBase(BaseModel):
+    name: Optional[str] = None
     image_url: HttpUrl
     category: str
 

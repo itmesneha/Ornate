@@ -39,6 +39,7 @@ class Jewellery(Base):
 
     id = Column(UUID(), primary_key=True, default=uuid.uuid4)
 
+    name = Column(String, nullable=True)
     image_url = Column(String, nullable=False)
     category = Column(String, nullable=False)
 

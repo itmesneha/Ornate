@@ -14,6 +14,7 @@ def create_jewellery(
     db: Session = Depends(get_db),
 ):
     jewellery = Jewellery(
+        name=jewellery_in.name,
         image_url=str(jewellery_in.image_url),
         category=jewellery_in.category,
         style=jewellery_in.style,
