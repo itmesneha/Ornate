@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from uuid import UUID
 
-from app.schemas.jewellery import JewelleryCreate, JewelleryRead
+from app.schemas.jewellery import JewelleryCreate, JewelleryUpdate, JewelleryRead
 from app.models.jewellery import Jewellery
 from app.db.deps import get_db
 
@@ -71,3 +72,29 @@ def list_jewellery(
         )
 
     return query.all()
+
+
+@router.put("/{jewellery_id}", response_model=JewelleryRead)
+def update_jewellery(
+    jewellery_id: UUID,
+    jewellery_update: JewelleryUpdate,
+    db: Session = Depends(get_db),
+):
+    jewellery = db.query(Jewellery).filter(Jewellery.id == jewellery_id).first()
+    
+    if not jewellery:
+        raise HTTPException(status_code=404, detail="Jewellery not found")
+    
+    # Update only the fields that are provided
+    update_data = jewellery_update.model_dump(exclude_unset=True)
+    
+    for field, value in update_data.items():
+        if field == "image_url" and value is not None:
+            setattr(jewellery, field, str(value))
+        else:
+            setattr(jewellery, field, value)
+    
+    db.commit()
+    db.refresh(jewellery)
+    
+    return jewellery

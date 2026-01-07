@@ -23,6 +23,19 @@ class JewelleryCreate(JewelleryBase):
     pass
 
 
+class JewelleryUpdate(BaseModel):
+    name: Optional[str] = None
+    image_url: Optional[HttpUrl] = None
+    category: Optional[str] = None
+    style: Optional[List[str]] = None
+    outfit_type: Optional[List[str]] = None
+    occasion: Optional[List[str]] = None
+    primary_colors: Optional[List[str]] = None
+    secondary_colors: Optional[List[str]] = None
+    material: Optional[str] = None
+    notes: Optional[str] = None
+
+
 class JewelleryRead(JewelleryBase):
     id: UUID
     created_at: datetime

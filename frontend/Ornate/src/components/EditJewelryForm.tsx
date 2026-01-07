@@ -1,25 +1,27 @@
 import { useState } from 'react';
-import { JewelryCategory, OutfitType } from '../types/jewelry';
+import type { JewelryCategory, OutfitType, Jewelry } from '../types/jewelry';
+import { JewelryCategory as JewelryCategoryValues, OutfitType as OutfitTypeValues } from '../types/jewelry';
 import { uploadImage } from '../services/api';
 import './AddJewelryForm.css';
 
-interface AddJewelryFormProps {
-  onSubmit: (jewelry: any) => void;
+interface EditJewelryFormProps {
+  jewelry: Jewelry;
+  onSubmit: (jewelry: Partial<Jewelry>) => void;
   onCancel: () => void;
 }
 
-export const AddJewelryForm = ({ onSubmit, onCancel }: AddJewelryFormProps) => {
-  const [name, setName] = useState('');
-  const [category, setCategory] = useState<JewelryCategory>(JewelryCategory.NECKLACE);
-  const [description, setDescription] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+export const EditJewelryForm = ({ jewelry, onSubmit, onCancel }: EditJewelryFormProps) => {
+  const [name, setName] = useState(jewelry.name);
+  const [category, setCategory] = useState<JewelryCategory>(jewelry.category);
+  const [description, setDescription] = useState(jewelry.description || '');
+  const [imageUrl, setImageUrl] = useState(jewelry.imageUrl);
+  const [imagePreview, setImagePreview] = useState<string | null>(jewelry.imageUrl);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [dragActive, setDragActive] = useState(false);
-  const [color, setColor] = useState('');
-  const [material, setMaterial] = useState('');
-  const [selectedOutfits, setSelectedOutfits] = useState<OutfitType[]>([]);
-  const [occasion, setOccasion] = useState('');
+  const [color, setColor] = useState(jewelry.color || '');
+  const [material, setMaterial] = useState(jewelry.material || '');
+  const [selectedOutfits, setSelectedOutfits] = useState<OutfitType[]>(jewelry.outfitTypes);
+  const [occasion, setOccasion] = useState(jewelry.occasion?.join(', ') || '');
 
   const handleFileSelect = async (file: File) => {
     if (!file.type.startsWith('image/')) {
@@ -42,7 +44,7 @@ export const AddJewelryForm = ({ onSubmit, onCancel }: AddJewelryFormProps) => {
     } catch (error) {
       console.error('Error uploading image:', error);
       alert('Failed to upload image. Please try again.');
-      setImagePreview(null);
+      setImagePreview(jewelry.imageUrl);
     } finally {
       setUploadingImage(false);
     }
@@ -89,28 +91,27 @@ export const AddJewelryForm = ({ onSubmit, onCancel }: AddJewelryFormProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const jewelry = {
-      id: Date.now().toString(),
+    const updatedJewelry = {
+      id: jewelry.id,
       name,
       category,
-      imageUrl: imageUrl || 'https://via.placeholder.com/300',
       description,
-      outfitTypes: selectedOutfits,
+      imageUrl,
       color,
       material,
-      occasion: occasion.split(',').map(o => o.trim()).filter(Boolean),
-      createdAt: new Date().toISOString(),
+      outfitTypes: selectedOutfits,
+      occasion: occasion ? occasion.split(',').map(o => o.trim()) : [],
     };
-
-    onSubmit(jewelry);
+    
+    onSubmit(updatedJewelry);
   };
 
   return (
     <div className="add-jewelry-overlay">
       <div className="add-jewelry-form">
         <div className="form-header">
-          <h2>Add New Jewelry</h2>
-          <button onClick={onCancel} className="close-btn">&times;</button>
+          <h2>Edit Jewelry</h2>
+          <button className="close-btn" onClick={onCancel}>&times;</button>
         </div>
 
         <form onSubmit={handleSubmit}>
@@ -121,8 +122,8 @@ export const AddJewelryForm = ({ onSubmit, onCancel }: AddJewelryFormProps) => {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              placeholder="e.g., Gold Necklace"
               required
-              placeholder="e.g., Gold Hoop Earrings"
             />
           </div>
 
@@ -134,7 +135,7 @@ export const AddJewelryForm = ({ onSubmit, onCancel }: AddJewelryFormProps) => {
               onChange={(e) => setCategory(e.target.value as JewelryCategory)}
               required
             >
-              {Object.values(JewelryCategory).map((cat) => (
+              {Object.values(JewelryCategoryValues).map((cat) => (
                 <option key={cat} value={cat}>{cat}</option>
               ))}
             </select>
@@ -147,7 +148,7 @@ export const AddJewelryForm = ({ onSubmit, onCancel }: AddJewelryFormProps) => {
               onDrop={handleDrop}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
-              onClick={() => document.getElementById('file-input')?.click()}
+              onClick={() => document.getElementById('file-input-edit')?.click()}
             >
               {imagePreview ? (
                 <div className="image-preview">
@@ -174,7 +175,7 @@ export const AddJewelryForm = ({ onSubmit, onCancel }: AddJewelryFormProps) => {
                 </div>
               )}
               <input
-                id="file-input"
+                id="file-input-edit"
                 type="file"
                 accept="image/*"
                 onChange={handleFileInputChange}
@@ -221,10 +222,10 @@ export const AddJewelryForm = ({ onSubmit, onCancel }: AddJewelryFormProps) => {
           <div className="form-group">
             <label>Outfit Types *</label>
             <div className="checkbox-grid">
-              {Object.values(OutfitType).map((outfit) => (
+              {Object.values(OutfitTypeValues).map((outfit) => (
                 <div
                   key={outfit}
-                  className={`outfit-type-box ${ selectedOutfits.includes(outfit) ? 'selected' : '' }`}
+                  className={`outfit-type-box ${selectedOutfits.includes(outfit) ? 'selected' : ''}`}
                   onClick={() => handleOutfitToggle(outfit)}
                 >
                   {outfit}
@@ -253,7 +254,7 @@ export const AddJewelryForm = ({ onSubmit, onCancel }: AddJewelryFormProps) => {
               className="btn btn-primary"
               disabled={!name || selectedOutfits.length === 0 || !imageUrl || uploadingImage}
             >
-              {uploadingImage ? 'Uploading...' : 'Add Jewelry'}
+              {uploadingImage ? 'Uploading...' : 'Update Jewelry'}
             </button>
           </div>
         </form>

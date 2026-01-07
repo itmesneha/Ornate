@@ -3,13 +3,15 @@ import type { Jewelry, SearchFilters } from './types/jewelry';
 import { SearchBar } from './components/SearchBar';
 import { JewelryGallery } from './components/JewelryGallery';
 import { AddJewelryForm } from './components/AddJewelryForm';
-import { getAllJewellery, searchJewellery, createJewellery } from './services/api';
+import { EditJewelryForm } from './components/EditJewelryForm';
+import { getAllJewellery, searchJewellery, createJewellery, updateJewellery } from './services/api';
 import './App.css';
 
 function App() {
   const [allJewelry, setAllJewelry] = useState<Jewelry[]>([]);
   const [filteredJewelry, setFilteredJewelry] = useState<Jewelry[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingJewelry, setEditingJewelry] = useState<Jewelry | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -63,6 +65,26 @@ function App() {
     }
   };
 
+  const handleEditJewelry = async (jewelry: Partial<Jewelry>) => {
+    if (!jewelry.id) return;
+    
+    try {
+      setLoading(true);
+      setError(null);
+      const updatedJewelry = await updateJewellery(jewelry.id, jewelry);
+      
+      // Update both arrays
+      setAllJewelry(prev => prev.map(j => j.id === updatedJewelry.id ? updatedJewelry : j));
+      setFilteredJewelry(prev => prev.map(j => j.id === updatedJewelry.id ? updatedJewelry : j));
+      setEditingJewelry(null);
+    } catch (err) {
+      setError('Failed to update jewelry');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="app">
       <header className="app-header">
@@ -106,7 +128,10 @@ function App() {
             Loading jewelry...
           </div>
         ) : (
-          <JewelryGallery items={filteredJewelry} />
+          <JewelryGallery 
+            items={filteredJewelry} 
+            onEdit={(jewelry) => setEditingJewelry(jewelry)}
+          />
         )}
       </main>
 
@@ -114,6 +139,14 @@ function App() {
         <AddJewelryForm
           onSubmit={handleAddJewelry}
           onCancel={() => setShowAddForm(false)}
+        />
+      )}
+
+      {editingJewelry && (
+        <EditJewelryForm
+          jewelry={editingJewelry}
+          onSubmit={handleEditJewelry}
+          onCancel={() => setEditingJewelry(null)}
         />
       )}
     </div>

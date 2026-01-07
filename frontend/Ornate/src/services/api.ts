@@ -13,6 +13,7 @@ export async function getHealth() {
 // Backend uses different field names, so we need to map them
 interface BackendJewellery {
   id: string;
+  name?: string;
   image_url: string;
   category: string;
   style?: string[];
@@ -26,6 +27,7 @@ interface BackendJewellery {
 }
 
 interface BackendJewelleryCreate {
+  name?: string;
   image_url: string;
   category: string;
   style?: string[];
@@ -40,6 +42,7 @@ interface BackendJewelleryCreate {
 // Convert frontend Jewelry to backend format
 function toBackendFormat(jewelry: Partial<Jewelry>): BackendJewelleryCreate {
   return {
+    name: jewelry.name,
     image_url: jewelry.imageUrl || '',
     category: jewelry.category || '',
     style: [], // Can be mapped from outfitTypes if needed
@@ -56,7 +59,7 @@ function toBackendFormat(jewelry: Partial<Jewelry>): BackendJewelleryCreate {
 function fromBackendFormat(backend: BackendJewellery): Jewelry {
   return {
     id: backend.id,
-    name: backend.category, // We'll improve this later
+    name: backend.name || backend.category,
     category: backend.category as any,
     imageUrl: backend.image_url,
     description: backend.notes,
@@ -100,6 +103,24 @@ export async function searchJewellery(filters: SearchFilters): Promise<Jewelry[]
   return data.map(fromBackendFormat);
 }
 
+export async function uploadImage(file: File): Promise<string> {
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  const response = await fetch(`${API_BASE_URL}/upload-image`, {
+    method: 'POST',
+    body: formData,
+  });
+  
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Failed to upload image: ${error}`);
+  }
+  
+  const data = await response.json();
+  return data.image_url;
+}
+
 export async function createJewellery(jewelry: Partial<Jewelry>): Promise<Jewelry> {
   const backendData = toBackendFormat(jewelry);
   
@@ -114,6 +135,26 @@ export async function createJewellery(jewelry: Partial<Jewelry>): Promise<Jewelr
   if (!response.ok) {
     const error = await response.text();
     throw new Error(`Failed to create jewellery: ${error}`);
+  }
+  
+  const data: BackendJewellery = await response.json();
+  return fromBackendFormat(data);
+}
+
+export async function updateJewellery(id: string, jewelry: Partial<Jewelry>): Promise<Jewelry> {
+  const backendData = toBackendFormat(jewelry);
+  
+  const response = await fetch(`${API_BASE_URL}/jewellery/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(backendData),
+  });
+  
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Failed to update jewellery: ${error}`);
   }
   
   const data: BackendJewellery = await response.json();

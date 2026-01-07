@@ -5,9 +5,10 @@ import './JewelryGallery.css';
 interface JewelryGalleryProps {
   items: Jewelry[];
   onItemClick?: (jewelry: Jewelry) => void;
+  onEdit?: (jewelry: Jewelry) => void;
 }
 
-export const JewelryGallery = ({ items, onItemClick }: JewelryGalleryProps) => {
+export const JewelryGallery = ({ items, onItemClick, onEdit }: JewelryGalleryProps) => {
   if (items.length === 0) {
     return (
       <div className="empty-state">
@@ -24,6 +25,7 @@ export const JewelryGallery = ({ items, onItemClick }: JewelryGalleryProps) => {
           key={jewelry.id}
           jewelry={jewelry}
           onClick={() => onItemClick?.(jewelry)}
+          onEdit={onEdit}
         />
       ))}
     </div>
