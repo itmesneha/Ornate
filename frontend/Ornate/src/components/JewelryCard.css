@@ -1,31 +1,49 @@
 .jewelry-card {
   background: white;
-  border-radius: 12px;
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   cursor: pointer;
   height: 100%;
   display: flex;
   flex-direction: column;
+  border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 .jewelry-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 15px 40px rgba(102, 126, 234, 0.3);
 }
 
 .jewelry-image-container {
   width: 100%;
   height: 250px;
   overflow: hidden;
-  background: #f5f5f5;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8eaf6 100%);
+  position: relative;
+}
+
+.jewelry-image-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.1) 100%);
+  pointer-events: none;
 }
 
 .jewelry-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.jewelry-card:hover .jewelry-image {
+  transform: scale(1.1);
 }
 
 .jewelry-info {
@@ -37,18 +55,23 @@
 
 .jewelry-name {
   margin: 0 0 8px 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: #333;
+  font-size: 19px;
+  font-weight: 700;
+  color: #2d3748;
+  line-height: 1.3;
 }
 
 .jewelry-category {
-  margin: 0 0 8px 0;
-  font-size: 14px;
-  color: #666;
-  font-weight: 500;
+  margin: 0 0 10px 0;
+  font-size: 12px;
+  color: #667eea;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .jewelry-description {
@@ -66,21 +89,27 @@
 .jewelry-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 8px;
+  gap: 8px;
+  margin-bottom: 10px;
 }
 
 .tag {
-  background: #e8f4f8;
-  color: #0277bd;
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 500;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 }
 
 .jewelry-detail {
   margin: 4px 0;
   font-size: 13px;
-  color: #777;
+  color: #888;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }

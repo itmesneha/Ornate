@@ -40,12 +40,13 @@ def list_jewellery(
     occasion: Optional[str] = None,
     outfit_type: Optional[str] = None,
     color: Optional[str] = None,
+    search: Optional[str] = None,
     db: Session = Depends(get_db),
 ):
     query = db.query(Jewellery)
 
     if category:
-        query = query.filter(Jewellery.category == category)
+        query = query.filter(Jewellery.category.ilike(f"%{category}%"))
 
     if occasion:
         query = query.filter(Jewellery.occasion.contains([occasion]))
@@ -57,6 +58,15 @@ def list_jewellery(
         query = query.filter(
             (Jewellery.primary_colors.contains([color])) |
             (Jewellery.secondary_colors.contains([color]))
+        )
+    
+    # Text search across multiple fields
+    if search:
+        search_term = f"%{search}%"
+        query = query.filter(
+            (Jewellery.category.ilike(search_term)) |
+            (Jewellery.material.ilike(search_term)) |
+            (Jewellery.notes.ilike(search_term))
         )
 
     return query.all()

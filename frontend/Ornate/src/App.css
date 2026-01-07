@@ -1,49 +1,65 @@
 .app {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 15s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .app-header {
-  background: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 24px 32px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 20px 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: sticky;
   top: 0;
   z-index: 100;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .header-content h1 {
   margin: 0;
-  color: #333;
-  font-size: 32px;
-  font-weight: 700;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
 }
 
 .header-content p {
   margin: 4px 0 0 0;
   color: #666;
   font-size: 14px;
+  font-weight: 500;
 }
 
 .add-btn {
-  padding: 12px 24px;
-  background: #0277bd;
+  padding: 12px 28px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 500;
+  border-radius: 25px;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
 }
 
 .add-btn:hover {
-  background: #01579b;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(2, 119, 189, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
 }
 
 .app-main {
@@ -52,15 +68,16 @@
 
 .results-header {
   max-width: 1400px;
-  margin: 20px auto 0;
+  margin: 30px auto 10px;
   padding: 0 20px;
 }
 
 .results-header h3 {
   margin: 0;
-  color: #333;
-  font-size: 18px;
-  font-weight: 600;
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 768px) {
@@ -75,6 +92,6 @@
   }
 
   .header-content h1 {
-    font-size: 28px;
+    font-size: 32px;
   }
 }

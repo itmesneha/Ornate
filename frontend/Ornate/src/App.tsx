@@ -3,64 +3,64 @@ import type { Jewelry, SearchFilters } from './types/jewelry';
 import { SearchBar } from './components/SearchBar';
 import { JewelryGallery } from './components/JewelryGallery';
 import { AddJewelryForm } from './components/AddJewelryForm';
+import { getAllJewellery, searchJewellery, createJewellery } from './services/api';
 import './App.css';
 
 function App() {
   const [allJewelry, setAllJewelry] = useState<Jewelry[]>([]);
   const [filteredJewelry, setFilteredJewelry] = useState<Jewelry[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Load jewelry from localStorage on mount
+  // Load jewelry from backend on mount
   useEffect(() => {
-    const stored = localStorage.getItem('jewelryCollection');
-    if (stored) {
-      const jewelry = JSON.parse(stored);
-      setAllJewelry(jewelry);
-      setFilteredJewelry(jewelry);
-    }
+    loadJewellery();
   }, []);
 
-  // Save to localStorage whenever jewelry changes
-  useEffect(() => {
-    if (allJewelry.length > 0) {
-      localStorage.setItem('jewelryCollection', JSON.stringify(allJewelry));
+  const loadJewellery = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const jewelry = await getAllJewellery();
+      setAllJewelry(jewelry);
+      setFilteredJewelry(jewelry);
+    } catch (err) {
+      setError('Failed to load jewelry collection');
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
-  }, [allJewelry]);
-
-  const handleSearch = (filters: SearchFilters) => {
-    let results = [...allJewelry];
-
-    // Filter by category
-    if (filters.category) {
-      results = results.filter(item => item.category === filters.category);
-    }
-
-    // Filter by outfit type
-    if (filters.outfitType) {
-      results = results.filter(item =>
-        item.outfitTypes.includes(filters.outfitType!)
-      );
-    }
-
-    // Filter by search query (name, description, color)
-    if (filters.searchQuery) {
-      const query = filters.searchQuery.toLowerCase();
-      results = results.filter(item =>
-        item.name.toLowerCase().includes(query) ||
-        item.description?.toLowerCase().includes(query) ||
-        item.color?.toLowerCase().includes(query) ||
-        item.material?.toLowerCase().includes(query)
-      );
-    }
-
-    setFilteredJewelry(results);
   };
 
-  const handleAddJewelry = (jewelry: Jewelry) => {
-    const newJewelry = [...allJewelry, jewelry];
-    setAllJewelry(newJewelry);
-    setFilteredJewelry(newJewelry);
-    setShowAddForm(false);
+  const handleSearch = async (filters: SearchFilters) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const results = await searchJewellery(filters);
+      setFilteredJewelry(results);
+    } catch (err) {
+      setError('Failed to search jewelry');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddJewelry = async (jewelry: Jewelry) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const newJewelry = await createJewellery(jewelry);
+      setAllJewelry(prev => [...prev, newJewelry]);
+      setFilteredJewelry(prev => [...prev, newJewelry]);
+      setShowAddForm(false);
+    } catch (err) {
+      setError('Failed to add jewelry');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -76,18 +76,38 @@ function App() {
       </header>
 
       <main className="app-main">
+        {error && (
+          <div style={{ 
+            padding: '16px', 
+            margin: '20px', 
+            background: '#fee', 
+            color: '#c33',
+            borderRadius: '8px',
+            textAlign: 'center'
+          }}>
+            {error}
+          </div>
+        )}
+
         <SearchBar onSearch={handleSearch} />
         
         <div className="results-header">
           <h3>
-            {filteredJewelry.length === allJewelry.length
+            {loading ? 'Loading...' : 
+              filteredJewelry.length === allJewelry.length
               ? `All Jewelry (${allJewelry.length})`
               : `Search Results (${filteredJewelry.length} of ${allJewelry.length})`
             }
           </h3>
         </div>
 
-        <JewelryGallery items={filteredJewelry} />
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '60px', color: '#666' }}>
+            Loading jewelry...
+          </div>
+        ) : (
+          <JewelryGallery items={filteredJewelry} />
+        )}
       </main>
 
       {showAddForm && (
