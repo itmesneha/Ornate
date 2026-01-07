@@ -6,3 +6,4 @@ supabase==2.11.0
 pydantic==2.10.3
 python-multipart==0.0.20
 psycopg2-binary==2.9.10
+Pillow==11.1.0
